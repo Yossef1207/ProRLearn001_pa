@@ -57,7 +57,7 @@ mkdir -p "$INPUTDIR/models"
 
 for DATASET in "${DATASETS[@]}"; do
     echo ">>> Starte ProRLearn001 Klassifikation fuer Dataset: $DATASET"
-    python reveal-VPG-classfication.py --dataset "${DATASET}" 2>&1 | tee "${DATASET}.log"
+    python VPG-classfication.py --dataset "${DATASET}" 2>&1 | tee "${DATASET}.log"
     echo ">>> ProRLearn001 Klassifikation fuer $DATASET abgeschlossen."
 
     # Log zurueckkopieren
