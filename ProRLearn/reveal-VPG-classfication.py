@@ -48,15 +48,27 @@ train_val_test['validation'] = val_dataset
 train_val_test['test'] = test_dataset
 
 dataset = {}
-for split in ['train', 'validation', 'test']:
+for split in ["train", "validation", "test"]:
     dataset[split] = []
-    for data in train_val_test[split]:
-        text = data['processed_func']
+    for idx, data in enumerate(train_val_test[split]):
+        text = data["processed_func"]
         # Einige Datasets (z.B. *with_codellama/*with_gpt-4o) enthalten leere oder NaN-Texte
         # -> MixedTemplate bricht dann mit "NoneType"-Fehler ab. Solche Beispiele ueberspringen.
         if text is None or (isinstance(text, float) and math.isnan(text)):
             continue
-        input_example = InputExample(text_a=str(text), label=int(data['target']))
+
+        # Original-Index aus der CSV (Spalte "index"), falls vorhanden,
+        # sonst Fallback auf laufenden Zähler im Split.
+        try:
+            orig_index = int(data["index"])
+        except Exception:
+            orig_index = int(idx)
+
+        input_example = InputExample(
+            guid=orig_index,
+            text_a=str(text),
+            label=int(data["target"]),
+        )
         dataset[split].append(input_example)
 
 # load plm
@@ -104,26 +116,75 @@ optimizer = AdamW(optimizer_grouped_parameters, lr=lr)
 num_training_steps = num_epochs * len(train_dataloader)
 scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=num_training_steps)
 
-# loss functions
-loss_func = torch.nn.CrossEntropyLoss()
-loss_func_1 = torch.nn.CrossEntropyLoss()
-
 def test(prompt_model, test_dataloader):
+    """Evaluiere Modell und gebe Metriken + Konfusionsmatrix + Indexlisten aus.
+
+    Indizes beziehen sich auf die Reihenfolge der Beispiele im jeweiligen
+    Datensatzsplit (Dataset-Order innerhalb des Dataloaders).
+    """
+
     allpreds = []
     alllabels = []
+    all_indices = []  # Indizes aus der Spalte "index" der CSV
+
     with torch.no_grad():
         for step, inputs in enumerate(test_dataloader):
             if use_cuda:
                 inputs = inputs.cuda()
             logits = prompt_model(inputs)
-            labels = inputs['label']
+            labels = inputs["label"]
+
+            preds = torch.argmax(logits, dim=-1)
             alllabels.extend(labels.cpu().tolist())
-            allpreds.extend(torch.argmax(logits, dim=-1).cpu().tolist())
-        acc = accuracy_score(alllabels, allpreds)
-        f1 = f1_score(alllabels, allpreds)
-        precision = precision_score(alllabels, allpreds, zero_division=0)
-        recall = recall_score(alllabels, allpreds)
-        print("acc: {}  recall: {}  precision: {}  f1: {}".format(acc, recall, precision, f1))
+            allpreds.extend(preds.cpu().tolist())
+
+            # Versuche, die ursprünglichen CSV-Indizes (guid) mitzunehmen
+            batch_guids = inputs.get("guid", None)
+            if batch_guids is not None:
+                if isinstance(batch_guids, torch.Tensor):
+                    all_indices.extend(batch_guids.cpu().tolist())
+                else:
+                    all_indices.extend([int(x) for x in batch_guids])
+            else:
+                # Fallback: laufende Indizes, falls aus irgendeinem Grund kein guid vorliegt
+                start = len(all_indices)
+                all_indices.extend(range(start, start + preds.size(0)))
+
+    # Klassifikationsmetriken
+    acc = accuracy_score(alllabels, allpreds)
+    f1 = f1_score(alllabels, allpreds)
+    precision = precision_score(alllabels, allpreds, zero_division=0)
+    recall = recall_score(alllabels, allpreds)
+
+    print("acc: {}  recall: {}  precision: {}  f1: {}".format(acc, recall, precision, f1))
+
+    # Konfusionsmatrix (Labels explizit 0,1, damit Reihenfolge klar ist)
+    cm = confusion_matrix(alllabels, allpreds, labels=[0, 1])
+    print("Confusion matrix (rows: true [0,1], cols: pred [0,1]):")
+    print(cm)
+
+    # Indizes der einzelnen Kategorien in Dataset-Order
+    tp_indices = []
+    tn_indices = []
+    fp_indices = []
+    fn_indices = []
+
+    # all_indices hat dieselbe Länge/Reihenfolge wie alllabels/allpreds
+    for csv_idx, y_true, y_pred in zip(all_indices, alllabels, allpreds):
+        if y_true == 1 and y_pred == 1:
+            tp_indices.append(csv_idx)
+        elif y_true == 0 and y_pred == 0:
+            tn_indices.append(csv_idx)
+        elif y_true == 0 and y_pred == 1:
+            fp_indices.append(csv_idx)
+        elif y_true == 1 and y_pred == 0:
+            fn_indices.append(csv_idx)
+
+    print("True Positive indices (CSV index column):", tp_indices)
+    print("False Positive indices (CSV index column):", fp_indices)
+    print("True Negative indices (CSV index column):", tn_indices)
+    print("False Negative indices (CSV index column):", fn_indices)
+
     return acc, recall, precision, f1
 
 
