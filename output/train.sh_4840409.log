@@ -1,0 +1,3 @@
+/var/spool/slurmd/job4840409/slurm_script: line 37: cd: /usertemp/cps/czt0517/4840409/ProRLearn001/ProRLearn: No such file or directory
+ERROR: Verzeichnis nicht gefunden!
+[H[2J[3J

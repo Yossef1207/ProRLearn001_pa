@@ -207,12 +207,8 @@ result_Recall = 0
 result_F1 = 0
 result_Pre = 0
 result_Acc = 0
+
 for epoch in range(num_epochs):
-    # train
-    tot_loss = 0
-    prompt_model.train()
-    num_steps = 0
-    for epoch in range(num_epochs):
     tot_loss = 0.0
     num_steps = 0
     prompt_model.train()

@@ -1,0 +1,52 @@
+/var/spool/slurmd/job4809740/slurm_script: line 38: cd: /usertemp/cps/czt0517/4809740/ProRLearn001/ProRLearn: No such file or directory
+>>> Starte ProRLearn001 Klassifikation fuer Dataset: reposvul_dataset
+python: can't open file '/work/cps/czt0517/ProRLearn001_pa/VPG-classfication.py': [Errno 2] No such file or directory
+>>> ProRLearn001 Klassifikation fuer reposvul_dataset abgeschlossen.
+cp: cannot stat '/usertemp/cps/czt0517/4809740/ProRLearn001/ProRLearn/reposvul_dataset.log': No such file or directory
+[WARN] Kein Model-Checkpoint gefunden fuer reposvul_dataset (/usertemp/cps/czt0517/4809740/ProRLearn001/models/reposvul_dataset_best_model.pt).
+>>> Starte ProRLearn001 Klassifikation fuer Dataset: reposvul_with_codellama
+python: can't open file '/work/cps/czt0517/ProRLearn001_pa/VPG-classfication.py': [Errno 2] No such file or directory
+>>> ProRLearn001 Klassifikation fuer reposvul_with_codellama abgeschlossen.
+cp: cannot stat '/usertemp/cps/czt0517/4809740/ProRLearn001/ProRLearn/reposvul_with_codellama.log': No such file or directory
+[WARN] Kein Model-Checkpoint gefunden fuer reposvul_with_codellama (/usertemp/cps/czt0517/4809740/ProRLearn001/models/reposvul_with_codellama_best_model.pt).
+>>> Starte ProRLearn001 Klassifikation fuer Dataset: reposvul_with_gpt-4o
+python: can't open file '/work/cps/czt0517/ProRLearn001_pa/VPG-classfication.py': [Errno 2] No such file or directory
+>>> ProRLearn001 Klassifikation fuer reposvul_with_gpt-4o abgeschlossen.
+cp: cannot stat '/usertemp/cps/czt0517/4809740/ProRLearn001/ProRLearn/reposvul_with_gpt-4o.log': No such file or directory
+[WARN] Kein Model-Checkpoint gefunden fuer reposvul_with_gpt-4o (/usertemp/cps/czt0517/4809740/ProRLearn001/models/reposvul_with_gpt-4o_best_model.pt).
+>>> Starte ProRLearn001 Klassifikation fuer Dataset: reposvul_with_vul_codellama
+python: can't open file '/work/cps/czt0517/ProRLearn001_pa/VPG-classfication.py': [Errno 2] No such file or directory
+>>> ProRLearn001 Klassifikation fuer reposvul_with_vul_codellama abgeschlossen.
+cp: cannot stat '/usertemp/cps/czt0517/4809740/ProRLearn001/ProRLearn/reposvul_with_vul_codellama.log': No such file or directory
+[WARN] Kein Model-Checkpoint gefunden fuer reposvul_with_vul_codellama (/usertemp/cps/czt0517/4809740/ProRLearn001/models/reposvul_with_vul_codellama_best_model.pt).
+>>> Starte ProRLearn001 Klassifikation fuer Dataset: reposvul_with_vul_gpt-4o
+python: can't open file '/work/cps/czt0517/ProRLearn001_pa/VPG-classfication.py': [Errno 2] No such file or directory
+>>> ProRLearn001 Klassifikation fuer reposvul_with_vul_gpt-4o abgeschlossen.
+cp: cannot stat '/usertemp/cps/czt0517/4809740/ProRLearn001/ProRLearn/reposvul_with_vul_gpt-4o.log': No such file or directory
+[WARN] Kein Model-Checkpoint gefunden fuer reposvul_with_vul_gpt-4o (/usertemp/cps/czt0517/4809740/ProRLearn001/models/reposvul_with_vul_gpt-4o_best_model.pt).
+>>> Starte ProRLearn001 Klassifikation fuer Dataset: primevul_dataset
+python: can't open file '/work/cps/czt0517/ProRLearn001_pa/VPG-classfication.py': [Errno 2] No such file or directory
+>>> ProRLearn001 Klassifikation fuer primevul_dataset abgeschlossen.
+cp: cannot stat '/usertemp/cps/czt0517/4809740/ProRLearn001/ProRLearn/primevul_dataset.log': No such file or directory
+[WARN] Kein Model-Checkpoint gefunden fuer primevul_dataset (/usertemp/cps/czt0517/4809740/ProRLearn001/models/primevul_dataset_best_model.pt).
+>>> Starte ProRLearn001 Klassifikation fuer Dataset: primevul_with_codellama
+python: can't open file '/work/cps/czt0517/ProRLearn001_pa/VPG-classfication.py': [Errno 2] No such file or directory
+>>> ProRLearn001 Klassifikation fuer primevul_with_codellama abgeschlossen.
+cp: cannot stat '/usertemp/cps/czt0517/4809740/ProRLearn001/ProRLearn/primevul_with_codellama.log': No such file or directory
+[WARN] Kein Model-Checkpoint gefunden fuer primevul_with_codellama (/usertemp/cps/czt0517/4809740/ProRLearn001/models/primevul_with_codellama_best_model.pt).
+>>> Starte ProRLearn001 Klassifikation fuer Dataset: primevul_with_gpt-4o
+python: can't open file '/work/cps/czt0517/ProRLearn001_pa/VPG-classfication.py': [Errno 2] No such file or directory
+>>> ProRLearn001 Klassifikation fuer primevul_with_gpt-4o abgeschlossen.
+cp: cannot stat '/usertemp/cps/czt0517/4809740/ProRLearn001/ProRLearn/primevul_with_gpt-4o.log': No such file or directory
+[WARN] Kein Model-Checkpoint gefunden fuer primevul_with_gpt-4o (/usertemp/cps/czt0517/4809740/ProRLearn001/models/primevul_with_gpt-4o_best_model.pt).
+>>> Starte ProRLearn001 Klassifikation fuer Dataset: primevul_with_vul_codellama
+python: can't open file '/work/cps/czt0517/ProRLearn001_pa/VPG-classfication.py': [Errno 2] No such file or directory
+>>> ProRLearn001 Klassifikation fuer primevul_with_vul_codellama abgeschlossen.
+cp: cannot stat '/usertemp/cps/czt0517/4809740/ProRLearn001/ProRLearn/primevul_with_vul_codellama.log': No such file or directory
+[WARN] Kein Model-Checkpoint gefunden fuer primevul_with_vul_codellama (/usertemp/cps/czt0517/4809740/ProRLearn001/models/primevul_with_vul_codellama_best_model.pt).
+>>> Starte ProRLearn001 Klassifikation fuer Dataset: primevul_with_vul_gpt-4o
+python: can't open file '/work/cps/czt0517/ProRLearn001_pa/VPG-classfication.py': [Errno 2] No such file or directory
+>>> ProRLearn001 Klassifikation fuer primevul_with_vul_gpt-4o abgeschlossen.
+cp: cannot stat '/usertemp/cps/czt0517/4809740/ProRLearn001/ProRLearn/primevul_with_vul_gpt-4o.log': No such file or directory
+[WARN] Kein Model-Checkpoint gefunden fuer primevul_with_vul_gpt-4o (/usertemp/cps/czt0517/4809740/ProRLearn001/models/primevul_with_vul_gpt-4o_best_model.pt).
+[H[2J[3J
