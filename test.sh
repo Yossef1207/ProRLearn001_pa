@@ -3,7 +3,7 @@
 #SBATCH --cpus-per-task 1
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=yossef.albuni@tuhh.de
-#SBATCH --time 1-23:00:00
+#SBATCH --time 23:00:00
 #SBATCH --gres gpu:1
 #SBATCH --mem-per-gpu 75000
 #SBATCH --output output/%x_%j.log
@@ -51,14 +51,12 @@ DATASETS=(
 
 for DATASET in "${DATASETS[@]}"; do
     echo ">>> Starte ProRLearn001 Klassifikation fuer Dataset: $DATASET"
-    python VPG-classfication.py --dataset "${DATASET}" 2>&1 | tee "${DATASET}.log" 
+    MODEL="$WORKDIR/models/${DATASET}_best_model.pt"
+    python test_only.py --dataset "${DATASET}" --model-path "$MODEL" 2>&1 | tee "test_${DATASET}.log" 
     echo ">>> ProRLearn001 Klassifikation fuer $DATASET abgeschlossen."
-    cp "$WORKDIR/ProRLearn/${DATASET}.log" "$INPUTDIR/logs/"
-    MODEL_SRC="$WORKDIR/models/${DATASET}_best_model.pt"
-    MODEL_DST="$INPUTDIR/models/${DATASET}_best_model.pt"
-    cp "$MODEL_SRC" "$MODEL_DST"
+    cp "$WORKDIR/ProRLearn/test_${DATASET}.log" "$INPUTDIR/test_logs/"
 done
 
-echo ">>> Training abgeschlossen"
+echo ">>> Testing abgeschlossen"
 rm -rf "$WORKDIR"
 exit 0

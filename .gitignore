@@ -1,2 +1,4 @@
 /CodeBERT/
 /data/
+/models/
+*.log

@@ -139,7 +139,7 @@ def test(prompt_model, test_dataloader):
             allpreds.extend(preds.cpu().tolist())
 
             # Versuche, die ursprünglichen CSV-Indizes (guid) mitzunehmen
-            batch_guids = inputs.get("guid", None)
+            batch_guids = inputs.get("index", None)
             if batch_guids is not None:
                 if isinstance(batch_guids, torch.Tensor):
                     all_indices.extend(batch_guids.cpu().tolist())
@@ -188,6 +188,10 @@ def test(prompt_model, test_dataloader):
     return acc, recall, precision, f1
 
 
+loss_func = torch.nn.CrossEntropyLoss()
+loss_func_1 = torch.nn.NLLLoss()
+
+
 from tqdm.auto import tqdm
 from itertools import tee
 
@@ -207,64 +211,41 @@ result_Recall = 0
 result_F1 = 0
 result_Pre = 0
 result_Acc = 0
-
 for epoch in range(num_epochs):
-    tot_loss = 0.0
-    num_steps = 0
-    prompt_model.train()
-
+    # train
+    tot_loss = 0
     for step, inputs in enumerate(train_dataloader):
+        loss = 0
         if use_cuda:
             inputs = inputs.cuda()
-
-        logits = prompt_model(inputs)          # [B, C]
-        labels = inputs["label"]               # [B]
-
-        # Policy π(a|s): stabiler direkt mit logits (ohne softmax explizit)
-        dist = torch.distributions.Categorical(logits=logits)
-        actions = dist.sample()                # [B]
-        log_probs = dist.log_prob(actions)     # [B]
-
-        # Reward R(t) nach Eq.(6): 1 wenn korrekt, sonst 0
-        rewards = (actions == labels).float()  # [B]
-
-        # Return nach Eq.(5): G_t = sum_{t'=t}^{B} R(t')
-        returns = torch.flip(
-            torch.cumsum(torch.flip(rewards, dims=[0]), dim=0),
-            dims=[0]
-        )  # [B]
-
-        # Baseline zur Varianzreduktion (empfohlen)
-        baseline = returns.mean().detach()
-        advantages = returns - baseline
-
-        # Policy Gradient Loss nach Eq.(5)
-        policy_loss = -(log_probs * advantages.detach()).mean()
-
-        # Optional: Entropy-Regularisierung (verhindert zu frühe Kollaps-Policy)
-        entropy = dist.entropy().mean()
-        entropy_coef = 0.01
-        loss = policy_loss - entropy_coef * entropy
-
-        # Optional: CE-Mix (praxisnäher/stabiler). Wenn du "rein RL" willst: auskommentieren.
-        # ce_coef = 0.1
-        # ce_loss = F.cross_entropy(logits, labels)
-        # loss = ce_loss + loss
-
-        optimizer.zero_grad()
+        logits = prompt_model(inputs)
+        action = torch.argmax(logits, dim=1)
+        y = F.softmax(logits, dim=-1)
+        labels = inputs['label']
+        reward = 1 * (action == labels).sum() - batch_size
+        for i in range(y.shape[0]):
+            new_shape = (1, 2)
+            input_1 = logits[i]
+            input_1 = input_1.reshape(new_shape)
+            loss += loss_func_1(logits[i], labels[i])
+            # if (action[i] == labels[i]):
+            #     loss += loss_func_1(logits[i], labels[i])
+            # else:
+            #     loss += loss_func_1(logits[i], labels[i]) * 1.2
+        loss = loss * 0.0625 * reward * -1
+        loss_1 = loss_func(logits, labels)
+        if(loss < 0):
+            loss = loss * -1
+        # loss = loss / 16
+        #loss = torch.tensor(loss)
+        #loss.requires_grad_(True)
         loss.backward()
-
-        # Stabilität: Gradient Clipping
-        torch.nn.utils.clip_grad_norm_(prompt_model.parameters(), 1.0)
-
-        optimizer.step()
-        scheduler.step()
-
         tot_loss += loss.item()
-        num_steps += 1
-
-    print(f"\nEpoch {epoch}, average loss: {tot_loss / max(1, num_steps)}", flush=True)
-
+        optimizer.step()
+        optimizer.zero_grad()
+        scheduler.step()
+        progress_bar.update(1)
+    print("\nEpoch {}, average loss: {}".format(epoch, tot_loss / (step + 1)), flush=True)
 
     # validate
     print('\n\nepoch{}------------validate------------'.format(epoch))
