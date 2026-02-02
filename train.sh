@@ -51,11 +51,11 @@ DATASETS=(
 
 for DATASET in "${DATASETS[@]}"; do
     echo ">>> Starte ProRLearn001 Klassifikation fuer Dataset: $DATASET"
-    python VPG-classfication.py --dataset "${DATASET}" 2>&1 | tee "${DATASET}.log" 
+    python VPG-classfication.py --dataset "${DATASET}" 2>&1 | tee "${DATASET}_512.log" 
     echo ">>> ProRLearn001 Klassifikation fuer $DATASET abgeschlossen."
-    cp "$WORKDIR/ProRLearn/${DATASET}.log" "$INPUTDIR/logs/"
-    MODEL_SRC="$WORKDIR/models/${DATASET}_best_model.pt"
-    MODEL_DST="$INPUTDIR/models/${DATASET}_best_model.pt"
+    cp "$WORKDIR/ProRLearn/${DATASET}_512.log" "$INPUTDIR/logs_512/"
+    MODEL_SRC="$WORKDIR/models_512/${DATASET}_best_model.pt"
+    MODEL_DST="$INPUTDIR/models_512/${DATASET}_best_model.pt"
     cp "$MODEL_SRC" "$MODEL_DST"
 done
 

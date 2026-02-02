@@ -14,7 +14,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 seed = 42
 batch_size = 16
 num_class = 2
-max_seq_l = 256
+max_seq_l = 512
 lr = 2e-5
 num_epochs = 6
 use_cuda = torch.cuda.is_available()
@@ -98,10 +98,10 @@ train_dataloader = PromptDataLoader(dataset=dataset["train"], template=mytemplat
     tokenizer_wrapper_class=WrapperClass, max_seq_length=max_seq_l, batch_size=batch_size,shuffle=True,
     teacher_forcing=False, predict_eos_token=False, truncate_method="head")
 validation_dataloader = PromptDataLoader(dataset=dataset["validation"], template=mytemplate, tokenizer=tokenizer,
-    tokenizer_wrapper_class=WrapperClass, max_seq_length=max_seq_l, batch_size=batch_size,shuffle=True,
+    tokenizer_wrapper_class=WrapperClass, max_seq_length=max_seq_l, batch_size=batch_size,shuffle=False,
     teacher_forcing=False, predict_eos_token=False, truncate_method="head")
 test_dataloader = PromptDataLoader(dataset=dataset["test"], template=mytemplate, tokenizer=tokenizer,
-    tokenizer_wrapper_class=WrapperClass, max_seq_length=max_seq_l, batch_size=batch_size,shuffle=True,
+    tokenizer_wrapper_class=WrapperClass, max_seq_length=max_seq_l, batch_size=batch_size,shuffle=False,
     teacher_forcing=False, predict_eos_token=False, truncate_method="head")
 
 from transformers import AdamW, get_linear_schedule_with_warmup
